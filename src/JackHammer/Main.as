@@ -3,6 +3,7 @@ package JackHammer
 	import flash.display.Sprite;
 	import flash.events.Event;
   import TomatoAS.Engine;
+  import TomatoAS.GameObject;
 	
 	/**
 	 * ...
@@ -22,8 +23,15 @@ package JackHammer
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
       
-      new Engine();
-      Engine.Instance.Start(stage);
+      new Engine(stage);
+      Engine.Instance.Start();
+      
+      var player:GameObject = Engine.Instance.CreateObject();
+      player.AddComponent(new Player());
+      
+      player.Initialize();
+      player.x = 100;
+      player.y = 100;
 		}
 		
 	}

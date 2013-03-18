@@ -4,6 +4,7 @@ package TomatoAS
   import flash.events.Event;
   import flash.system.System;
   import flash.utils.Dictionary;
+  import flash.utils.Timer;
   
 	/**
 	 * ...
@@ -14,16 +15,18 @@ package TomatoAS
     private var m_Systems:Dictionary;
     private var m_Objects:Dictionary;
     private var m_Trash:Array;
+    private var m_Stage:Stage;
     
     public static var Instance:Engine;
     
-		public function Engine() 
+		public function Engine(stage:Stage) 
 		{
       Instance = this;
       
 			m_Systems = new Dictionary();
       m_Objects = new Dictionary();
       m_Trash = new Array();
+      m_Stage = stage;
 		}
     
     public function AddSystem(system:IComponent):void
@@ -40,6 +43,7 @@ package TomatoAS
     {
       var gameObject:GameObject = new GameObject();
       m_Objects[gameObject.GetID()] = gameObject;
+      m_Stage.addChild(gameObject);
       return gameObject;
     }
     
@@ -48,25 +52,26 @@ package TomatoAS
       m_Trash.push(gameObject);
     }
 		
-    public function Start(stage:Stage):void
+    public function Start():void
     {
-      stage.addEventListener(Event.ENTER_FRAME, Update, false, 0, true);
+      m_Stage.addEventListener(Event.ENTER_FRAME, Update, false, 0, true);  
     }
     
     public function Update(e:Event):void
     {
       for (var systemName:String in m_Systems)
       {
-        m_Systems[systemName].Update();
+        m_Systems[systemName].Update(0.017);
       }
       
       for (var objectID:String in m_Objects)
       {
-        m_Objects[objectID].Update();
+        m_Objects[objectID].Update(0.017);
       }
       
       for (objectID in m_Trash)
       {
+        m_Stage.removeChild(m_Trash[objectID]);
         delete m_Objects[m_Trash[objectID].GetID()];
       }
       m_Trash = [];
