@@ -27,7 +27,7 @@ package JackHammer
     public override function Update(e:Event):void
     {
       // Get angle to mouse
-      var angle:Number = Math.atan2(stage.mouseY - y, stage.mouseX - x);
+      var angle:Number = Math.atan2(Engine.Instance.MouseWorld.y - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);
       
       // Constrain to direction we want to move
       if (angle < -Math.PI / 2)
@@ -43,14 +43,15 @@ package JackHammer
       rotation = (angle * 180) / Math.PI + 90;
       
       // Update "camera"
-      Engine.Instance.y = -this.parent.y;
+      Engine.Instance.Camera.x = this.parent.x;
+      Engine.Instance.Camera.y = this.parent.y;
     }
     
     private function Draw():void
     {
       graphics.lineStyle(1);
       graphics.beginFill(0x3691AB);
-      graphics.drawRect(0, 0, 20, 50);
+      graphics.drawRect(-10, -25, 20, 50);
       graphics.endFill(); 
     }
     

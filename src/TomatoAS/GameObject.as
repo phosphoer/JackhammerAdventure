@@ -12,12 +12,14 @@ package TomatoAS
   {
     private var m_Components:Dictionary;
     private var m_ID:int;
+    private var m_Layer:int = 0;
     
     private static var CurrentID:int = 0;
     
     public function GameObject() 
     {
       m_ID = CurrentID++;
+      m_Layer = 0;
       
       m_Components = new Dictionary();
     }
@@ -44,6 +46,11 @@ package TomatoAS
     public function GetID():int
     {
       return m_ID;
+    }
+    
+    public function GetLayer():int
+    {
+      return m_Layer;
     }
   }
 
