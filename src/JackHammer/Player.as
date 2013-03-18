@@ -4,6 +4,7 @@ package JackHammer
   import flash.events.Event;
   import flash.events.MouseEvent;
   import TomatoAS.IComponent;
+  import TomatoAS.Engine;
   
 	/**
    * ...
@@ -21,7 +22,6 @@ package JackHammer
     
     public override function Initialize():void
     {
-      trace("Initialized");
     }
     
     public override function Update(e:Event):void
@@ -29,17 +29,28 @@ package JackHammer
       // Get angle to mouse
       var angle:Number = Math.atan2(stage.mouseY - y, stage.mouseX - x);
       
-      // Move
-      x += Math.cos(angle) * m_Speed;
-      y += Math.sin(angle) * m_Speed;
+      // Constrain to direction we want to move
+      if (angle < -Math.PI / 2)
+        angle = Math.PI;
+      else if (angle < 0)
+        angle = 0;
       
+      // Move
+      this.parent.x += Math.cos(angle) * m_Speed;
+      this.parent.y += Math.sin(angle) * m_Speed;
+      
+      // Rotate to direction
+      rotation = (angle * 180) / Math.PI + 90;
+      
+      // Update "camera"
+      Engine.Instance.y = -this.parent.y;
     }
     
     private function Draw():void
     {
       graphics.lineStyle(1);
       graphics.beginFill(0x3691AB);
-      graphics.drawCircle(0, 0, 30);
+      graphics.drawRect(0, 0, 20, 50);
       graphics.endFill(); 
     }
     
