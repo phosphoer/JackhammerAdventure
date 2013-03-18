@@ -16,7 +16,7 @@ package JackHammer
     
     public function Player() 
     { 
-      m_Speed = 5;
+      m_Speed = 10;
       Draw();
     }
     
@@ -42,7 +42,7 @@ package JackHammer
       // Rotate to direction
       rotation = (angle * 180) / Math.PI + 90;
       
-      // Update "camera"
+      // Update camera
       Engine.Instance.Camera.x = this.parent.x;
       Engine.Instance.Camera.y = this.parent.y;
     }

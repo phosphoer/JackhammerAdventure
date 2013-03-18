@@ -35,12 +35,18 @@ package TomatoAS
     public function AddComponent(component:IComponent):void
     {
       m_Components[component.GetName()] = component;
+      component.Parent = this;
       addChild(component);
     }
     
     public function GetComponent(componentName:String):IComponent
     {
       return m_Components[componentName];
+    }
+    
+    public function Destroy():void
+    {
+      Engine.Instance.DestroyObject(this);
     }
     
     public function GetID():int
@@ -51,6 +57,11 @@ package TomatoAS
     public function GetLayer():int
     {
       return m_Layer;
+    }
+    
+    public function SetZOrder(index:int):void
+    {
+      parent.setChildIndex(this, index);
     }
   }
 

@@ -8,6 +8,8 @@ package TomatoAS
    */
   public class IComponent extends Sprite
   { 
+    public var Parent:GameObject;
+    
     public function IComponent() 
     {
       addEventListener(Event.ADDED_TO_STAGE, InitializeSuper, false, 0, true);
