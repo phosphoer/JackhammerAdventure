@@ -29,8 +29,11 @@ package JackHammer
       var player:GameObject = Engine.Instance.CreateObject();
       player.AddComponent(new Player());
       
-      player.x = 0;
-      player.y = 0;
+      var rock:GameObject = Engine.Instance.CreateObject();
+      rock.AddComponent(new Rock());
+      
+      rock.x = 0;
+      rock.y = 300;
 		}
 		
 	}
