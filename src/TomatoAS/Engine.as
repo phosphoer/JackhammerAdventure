@@ -1,5 +1,6 @@
 package TomatoAS 
 {
+  import flash.display.Sprite;
   import flash.display.Stage;
   import flash.events.Event;
   import flash.system.System;
@@ -10,7 +11,7 @@ package TomatoAS
 	 * ...
 	 * @author David Evans
 	 */
-	public class Engine
+	public class Engine extends Sprite
 	{
     private var m_Systems:Dictionary;
     private var m_Objects:Dictionary;
@@ -43,7 +44,7 @@ package TomatoAS
     {
       var gameObject:GameObject = new GameObject();
       m_Objects[gameObject.GetID()] = gameObject;
-      m_Stage.addChild(gameObject);
+      addChild(gameObject);
       return gameObject;
     }
     
@@ -53,6 +54,12 @@ package TomatoAS
     }
 		
     public function Start():void
+    {
+      this.addEventListener(Event.ADDED_TO_STAGE, Added, false, 0, true);  
+      m_Stage.addChild(this);
+    }
+    
+    public function Added(e:Event):void
     {
       m_Stage.addEventListener(Event.ENTER_FRAME, Update, false, 0, true);  
     }
@@ -64,14 +71,9 @@ package TomatoAS
         m_Systems[systemName].Update(0.017);
       }
       
-      for (var objectID:String in m_Objects)
+      for (var objectID:String in m_Trash)
       {
-        m_Objects[objectID].Update(0.017);
-      }
-      
-      for (objectID in m_Trash)
-      {
-        m_Stage.removeChild(m_Trash[objectID]);
+        removeChild(m_Trash[objectID]);
         delete m_Objects[m_Trash[objectID].GetID()];
       }
       m_Trash = [];

@@ -29,9 +29,8 @@ package JackHammer
       var player:GameObject = Engine.Instance.CreateObject();
       player.AddComponent(new Player());
       
-      player.Initialize();
-      player.x = 100;
-      player.y = 100;
+      player.x = 0;
+      player.y = 0;
 		}
 		
 	}

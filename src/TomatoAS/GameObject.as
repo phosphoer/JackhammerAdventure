@@ -1,6 +1,7 @@
 package TomatoAS 
 {
   import flash.display.Sprite;
+  import flash.events.Event;
   import flash.geom.Point;
   import flash.utils.Dictionary;
 	/**
@@ -21,33 +22,18 @@ package TomatoAS
       m_Components = new Dictionary();
     }
     
-    public function Initialize():void
-    {
-      for (var i:String in m_Components)
-      {
-        m_Components[i].Initialize();
-        addChild(m_Components[i]);
-      }
-    }
-    
     public function Uninitialize():void
     {
       for (var i:String in m_Components)
       {
-        m_Components[i].Uninitialize();
         removeChild(m_Components[i]);
       }
-    }
-    
-    public function Update(dt:Number):void
-    {
-      for (var i:String in m_Components)
-        m_Components[i].Update(dt);
     }
     
     public function AddComponent(component:IComponent):void
     {
       m_Components[component.GetName()] = component;
+      addChild(component);
     }
     
     public function GetComponent(componentName:String):IComponent
