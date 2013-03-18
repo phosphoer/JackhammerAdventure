@@ -17,6 +17,16 @@ package JackHammer
       Draw();
     }
     
+    public override function Initialize():void
+    {
+      Main.Obstacles[Parent.GetID()] = this;
+    }
+    
+    public override function Uninitialize():void
+    {
+      delete Main.Obstacles[Parent.GetID()];
+    }
+    
     public override function Update(e:Event):void
     {
       if (this.parent.y < Engine.Instance.Camera.y - stage.stageHeight)

@@ -45,6 +45,15 @@ package JackHammer
       // Update camera
       Engine.Instance.Camera.x = this.parent.x;
       Engine.Instance.Camera.y = this.parent.y;
+      
+      // Check collision against obstacles
+      for (var i:String in Main.Obstacles)
+      {
+        if (hitTestObject(Main.Obstacles[i]))
+        {
+          Parent.Destroy();
+        }
+      }
     }
     
     private function Draw():void

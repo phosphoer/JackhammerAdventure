@@ -2,6 +2,7 @@ package JackHammer
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
+  import flash.utils.Dictionary;
   import TomatoAS.Engine;
   import TomatoAS.GameObject;
 	
@@ -12,6 +13,8 @@ package JackHammer
 	public class Main extends Sprite 
 	{
 		private var m_Background:GameObject;
+    
+    public static var Obstacles:Dictionary = new Dictionary();
     
 		public function Main():void 
 		{
