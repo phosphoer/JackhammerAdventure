@@ -1,7 +1,8 @@
-package TomatoAS
+package JackHammer
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
+  import TomatoAS.Engine;
 	
 	/**
 	 * ...
@@ -20,6 +21,9 @@ package TomatoAS
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
+      
+      new Engine();
+      Engine.Instance.Start(stage);
 		}
 		
 	}
