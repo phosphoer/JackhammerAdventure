@@ -13,6 +13,7 @@ package JackHammer
 	public class Main extends Sprite 
 	{
 		private var m_Background:GameObject;
+    private var m_PlayerMoving:Boolean;
     
     public static var Obstacles:Dictionary = new Dictionary();
     
@@ -29,7 +30,19 @@ package JackHammer
       
       new Engine(stage);
       Engine.Instance.Start();
+     
+      addEventListener(Event.ENTER_FRAME, GameLoop, false, 0, true);
+      stage.addEventListener("StartGame", StartGame, false, 0, true);
+      stage.addEventListener("StartMoving", StartMoving, false, 0, true);
       
+      stage.dispatchEvent(new Event("StartGame"));
+		}
+    
+    public function StartGame(e:Event):void
+    {
+      if (m_Background && m_Background.parent != null)
+        m_Background.Destroy();
+        
       m_Background = Engine.Instance.CreateObject();
       m_Background.AddComponent(new Background1());
       
@@ -37,9 +50,15 @@ package JackHammer
       player.AddComponent(new Player());
       player.x = m_Background.width / 2;
       player.y = -100;
+      Engine.Instance.Camera.y = 0;
       
-      addEventListener(Event.ENTER_FRAME, GameLoop, false, 0, true);
-		}
+      m_PlayerMoving = false;
+    }
+    
+    public function StartMoving(e:Event):void
+    {
+      m_PlayerMoving = true;
+    }
     
     private function GameLoop(e:Event):void
     {
@@ -53,7 +72,7 @@ package JackHammer
       }
       
       // Spawn big rocks
-      if (Math.random() < 0.05)
+      if (Math.random() < 0.05 && m_PlayerMoving)
       {
         var rock:GameObject = Engine.Instance.CreateObject();
         rock.AddComponent(new Lava());

@@ -37,7 +37,8 @@ package JackHammer
     public override function Update(e:Event):void
     {
       // Get angle to mouse
-      m_Angle = Math.atan2(Engine.Instance.MouseWorld.y - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);
+      var angle:Number = Math.atan2(Engine.Instance.MouseWorld.y - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);
+      m_Angle += (angle - m_Angle) / 15;
       
       // Constrain to direction we want to move
       if (m_Angle < -Math.PI / 2)
@@ -65,6 +66,7 @@ package JackHammer
         if (this.Parent.TestCollision(Main.Obstacles[i]))
         {
           Parent.Destroy();
+          stage.dispatchEvent(new Event("StartGame"));
           break;
         }
       }
@@ -73,6 +75,7 @@ package JackHammer
     private function OnMouseDown(e:MouseEvent):void
     {
       m_Moving = true;
+      stage.dispatchEvent(new Event("StartMoving"));
     }
     
     private function Draw():void

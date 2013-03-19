@@ -84,18 +84,21 @@ package TomatoAS
       // rule out anything that we know can't collide:
       if (((bounds1.right < bounds2.left) || (bounds2.right < bounds1.left)) || ((bounds1.bottom < bounds2.top) || (bounds2.bottom < bounds1.top)) ) 
       {
-        return null;
+        return false;
       }
       
       // determine test area boundaries:
-      var bounds:Object = {};
+      var bounds:Rectangle = new Rectangle();
       bounds.left = Math.max(bounds1.left,bounds2.left);
       bounds.right = Math.min(bounds1.right,bounds2.right);
       bounds.top = Math.max(bounds1.top,bounds2.top);
       bounds.bottom = Math.min(bounds1.bottom,bounds2.bottom);
       
       // set up the image to use:
-      var img:BitmapData = new BitmapData(bounds.right-bounds.left,bounds.bottom-bounds.top,false);
+      if (bounds.width < 1 || bounds.height < 1)
+        return false;
+        
+      var img:BitmapData = new BitmapData(bounds.right - bounds.left, bounds.bottom - bounds.top, false);
       
       // draw in the first image:
       var mat:Matrix = this.transform.concatenatedMatrix;
@@ -113,12 +116,13 @@ package TomatoAS
       var intersection:Rectangle = img.getColorBoundsRect(0xFFFFFFFF,0xFF00FFFF);
       
       // if there is no intersection, return null:
-      if (intersection.width == 0) { return null; }
+      if (intersection.width == 0) { return false; }
       
       // adjust the intersection to account for the bounds:
       intersection.x += bounds.left;
       intersection.y += bounds.top;
       
+      img.dispose();
       return intersection.width > 0 && intersection.height > 0;
     }
   }
