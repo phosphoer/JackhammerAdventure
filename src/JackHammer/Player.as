@@ -15,6 +15,7 @@ package JackHammer
     private var m_Angle:Number;
     private var m_Speed:Number;
     private var m_Moving:Boolean;
+    private var m_Score:int;
     
     public function Player() 
     { 
@@ -38,7 +39,8 @@ package JackHammer
     {
       // Get angle to mouse
       var angle:Number = Math.atan2(Engine.Instance.MouseWorld.y - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);
-      m_Angle += (angle - m_Angle) / 15;
+      if (this.parent.y < Engine.Instance.MouseWorld.y)
+        m_Angle += (angle - m_Angle) / 15;
       
       // Constrain to direction we want to move
       if (m_Angle < -Math.PI / 2)
@@ -60,6 +62,9 @@ package JackHammer
       Engine.Instance.Camera.x = this.parent.x;
       Engine.Instance.Camera.y = this.parent.y;
       
+      // Update score
+      m_Score = Math.max(0, this.parent.y);
+      
       // Check collision against obstacles
       for (var i:String in Main.Obstacles)
       {
@@ -70,6 +75,11 @@ package JackHammer
           break;
         }
       }
+    }
+    
+    public override function GetName():String
+    {
+      return "Player";
     }
     
     private function OnMouseDown(e:MouseEvent):void
@@ -84,6 +94,11 @@ package JackHammer
       graphics.beginFill(0x3691AB);
       graphics.drawRect(-10, -25, 20, 50);
       graphics.endFill(); 
+    }
+    
+    public function GetScore():int
+    {
+      return m_Score;
     }
     
   }

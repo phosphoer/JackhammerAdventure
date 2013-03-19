@@ -18,6 +18,7 @@ package TomatoAS
     private var m_Components:Dictionary;
     private var m_ID:int;
     private var m_Layer:int = 0;
+    private var m_Destroyed:Boolean;
     
     private static var CurrentID:int = 0;
     
@@ -25,6 +26,7 @@ package TomatoAS
     {
       m_ID = CurrentID++;
       m_Layer = 0;
+      m_Destroyed = false;
       
       m_Components = new Dictionary();
     }
@@ -51,6 +53,9 @@ package TomatoAS
     
     public function Destroy():void
     {
+      if (m_Destroyed)
+        return;
+      m_Destroyed = true;
       Engine.Instance.DestroyObject(this);
     }
     

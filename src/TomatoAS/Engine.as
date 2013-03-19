@@ -22,6 +22,7 @@ package TomatoAS
     
     public var Camera:Point;
     public var MouseWorld:Point;
+    public var HUDLayer:Sprite;
     
     public static var Instance:Engine;
     
@@ -40,6 +41,8 @@ package TomatoAS
         m_Layers.push(new Sprite())
         addChild(m_Layers[i]);
       }
+      HUDLayer = new Sprite();
+      addChild(HUDLayer);
       
       Camera = new Point();
       MouseWorld = new Point();
