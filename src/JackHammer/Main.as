@@ -51,6 +51,20 @@ package JackHammer
     
     public function StartGame(e:Event):void
     {
+      for (var x:String in Grid)
+      {
+        for (var y:String in Grid)
+        {
+          var obj:GameObject = Grid[x][y];
+          if (obj)
+          {
+            obj.Destroy();
+            Grid[x][y] = null;
+          }
+        }
+      }
+      Grid = new Dictionary();
+      
       var player:GameObject = Engine.Instance.CreateObject();
       player.AddComponent(new Player());
       player.x = 0;
@@ -99,6 +113,7 @@ package JackHammer
           obj.x = gridX * Background1.Width;
           obj.y = gridY * Background1.Height;
           Grid[gridX][gridY] = obj;
+          SpawnLava(obj);
         }
       }
       
@@ -120,14 +135,17 @@ package JackHammer
           }
         }
       }
-      
-      // Spawn big rocks
-      if (Math.random() < 0.05 && m_PlayerMoving)
+    }
+    
+    public function SpawnLava(bg:GameObject):void
+    {
+      var num:int = (m_Player.GetComponent("Player") as Player).GetScore() / 1000 + 5;
+      for (var i:int = 0; i < num; ++i)
       {
-        var rock:GameObject = Engine.Instance.CreateObject();
-        rock.AddComponent(new Lava());
-        rock.x = Math.random() * stage.stageWidth - stage.stageWidth / 2 + Engine.Instance.Camera.x;
-        rock.y = stage.stageHeight + 150 + Engine.Instance.Camera.y;
+        var obj:GameObject = Engine.Instance.CreateObject();
+        obj.AddComponent(new Lava());
+        obj.x = bg.x + Math.random() * Background1.Width;
+        obj.y = bg.y + Math.random() * Background1.Height;
       }
     }
 		

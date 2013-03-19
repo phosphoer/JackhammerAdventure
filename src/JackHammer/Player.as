@@ -38,9 +38,11 @@ package JackHammer
     public override function Update(e:Event):void
     {
       // Get angle to mouse
-      var angle:Number = Math.atan2(Engine.Instance.MouseWorld.y - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);
-      if (this.parent.y < Engine.Instance.MouseWorld.y)
-        m_Angle += (angle - m_Angle) / 15;
+      var mouseY:Number = Engine.Instance.MouseWorld.y;
+      if (mouseY < this.parent.y)
+        mouseY = this.parent.y;
+      var angle:Number = Math.atan2(mouseY - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);      
+      m_Angle += (angle - m_Angle) / 15;
       
       // Constrain to direction we want to move
       if (m_Angle < -Math.PI / 2)
@@ -51,6 +53,7 @@ package JackHammer
       // Move
       if (m_Moving)
       {
+        m_Speed = 10 + Math.log(m_Score / 100 + 1);
         this.parent.x += Math.cos(m_Angle) * m_Speed;
         this.parent.y += Math.sin(m_Angle) * m_Speed;
       }
