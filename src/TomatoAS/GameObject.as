@@ -69,6 +69,9 @@ package TomatoAS
       parent.setChildIndex(this, index);
     }
     
+    // * Borrowed from 
+    // * GTween by Grant Skinner. Aug 1, 2005
+    // * Visit www.gskinner.com/blog
     public function TestCollision(obj:DisplayObjectContainer):Boolean
     {
       // set up default params:
@@ -95,7 +98,6 @@ package TomatoAS
       var img:BitmapData = new BitmapData(bounds.right-bounds.left,bounds.bottom-bounds.top,false);
       
       // draw in the first image:
-      // derp
       var mat:Matrix = this.transform.concatenatedMatrix;
       mat.tx -= bounds.left;
       mat.ty -= bounds.top;
