@@ -95,6 +95,7 @@ package TomatoAS
       var img:BitmapData = new BitmapData(bounds.right-bounds.left,bounds.bottom-bounds.top,false);
       
       // draw in the first image:
+      // derp
       var mat:Matrix = this.transform.concatenatedMatrix;
       mat.tx -= bounds.left;
       mat.ty -= bounds.top;
