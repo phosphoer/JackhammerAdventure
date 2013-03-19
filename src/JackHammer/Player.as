@@ -12,35 +12,48 @@ package JackHammer
    */
   public class Player extends IComponent
   {
+    private var m_Angle:Number;
     private var m_Speed:Number;
+    private var m_Moving:Boolean;
     
     public function Player() 
     { 
+      m_Angle = 0;
       m_Speed = 10;
+      m_Moving = false;
       Draw();
     }
     
     public override function Initialize():void
     {
+      stage.addEventListener(MouseEvent.CLICK, OnMouseDown, false, 0, true);
+    }
+    
+    public override function Uninitialize():void
+    {
+      stage.removeEventListener(MouseEvent.CLICK, OnMouseDown);
     }
     
     public override function Update(e:Event):void
     {
       // Get angle to mouse
-      var angle:Number = Math.atan2(Engine.Instance.MouseWorld.y - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);
+      m_Angle = Math.atan2(Engine.Instance.MouseWorld.y - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);
       
       // Constrain to direction we want to move
-      if (angle < -Math.PI / 2)
-        angle = Math.PI;
-      else if (angle < 0)
-        angle = 0;
+      if (m_Angle < -Math.PI / 2)
+        m_Angle = Math.PI;
+      else if (m_Angle < 0)
+        m_Angle = 0;
       
       // Move
-      this.parent.x += Math.cos(angle) * m_Speed;
-      this.parent.y += Math.sin(angle) * m_Speed;
+      if (m_Moving)
+      {
+        this.parent.x += Math.cos(m_Angle) * m_Speed;
+        this.parent.y += Math.sin(m_Angle) * m_Speed;
+      }
       
       // Rotate to direction
-      rotation = (angle * 180) / Math.PI + 90;
+      rotation = (m_Angle * 180) / Math.PI + 90;
       
       // Update camera
       Engine.Instance.Camera.x = this.parent.x;
@@ -49,11 +62,17 @@ package JackHammer
       // Check collision against obstacles
       for (var i:String in Main.Obstacles)
       {
-        if (hitTestObject(Main.Obstacles[i]))
+        if (this.Parent.TestCollision(Main.Obstacles[i]))
         {
           Parent.Destroy();
+          break;
         }
       }
+    }
+    
+    private function OnMouseDown(e:MouseEvent):void
+    {
+      m_Moving = true;
     }
     
     private function Draw():void
