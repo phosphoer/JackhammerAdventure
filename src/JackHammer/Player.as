@@ -1,10 +1,14 @@
 package JackHammer 
 {
   import flash.display.Graphics;
+  import flash.display.Shape;
+  import flash.display.Sprite;
   import flash.events.Event;
   import flash.events.MouseEvent;
+  import flash.geom.Matrix;
   import TomatoAS.IComponent;
   import TomatoAS.Engine;
+  import JackHammer.Resources;
   
 	/**
    * ...
@@ -13,13 +17,19 @@ package JackHammer
   public class Player extends IComponent
   {
     private var m_Angle:Number;
+    private var m_DudeAngle:Number;
     private var m_Speed:Number;
     private var m_Moving:Boolean;
     private var m_Score:int;
+    private var m_Dude:Sprite;
+    private var m_HitTest:Sprite;
     
     public function Player() 
     { 
       m_Angle = 0;
+      m_DudeAngle = 0;
+      m_Dude = new Sprite();
+      m_HitTest = new Sprite();
       m_Speed = 10;
       m_Moving = false;
       Draw();
@@ -28,6 +38,9 @@ package JackHammer
     public override function Initialize():void
     {
       stage.addEventListener(MouseEvent.CLICK, OnMouseDown, false, 0, true);
+      addChild(m_Dude);
+      addChild(m_HitTest);
+      m_HitTest.visible = false;
     }
     
     public override function Uninitialize():void
@@ -41,8 +54,9 @@ package JackHammer
       var mouseY:Number = Engine.Instance.MouseWorld.y;
       if (mouseY < this.parent.y)
         mouseY = this.parent.y;
-      var angle:Number = Math.atan2(mouseY - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);      
+      var angle:Number = Math.atan2(mouseY - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);
       m_Angle += (angle - m_Angle) / 15;
+      m_DudeAngle += (angle - m_DudeAngle) / 25;
       
       // Constrain to direction we want to move
       if (m_Angle < -Math.PI / 2)
@@ -59,7 +73,8 @@ package JackHammer
       }
       
       // Rotate to direction
-      rotation = (m_Angle * 180) / Math.PI + 90;
+      rotation = (m_Angle * 180) / Math.PI - 90;
+      m_Dude.rotation = ((m_DudeAngle - m_Angle) * 180) / Math.PI;
       
       // Update camera
       Engine.Instance.Camera.x = this.parent.x;
@@ -71,7 +86,8 @@ package JackHammer
       // Check collision against obstacles
       for (var i:String in Main.Obstacles)
       {
-        if (this.Parent.TestCollision(Main.Obstacles[i]))
+        // if (this.Parent.TestCollision(Main.Obstacles[i]))
+        if (Main.Obstacles[i].Parent.TestCollision(m_HitTest))
         {
           Parent.Destroy();
           stage.dispatchEvent(new Event("StartGame"));
@@ -93,10 +109,24 @@ package JackHammer
     
     private function Draw():void
     {
-      graphics.lineStyle(1);
-      graphics.beginFill(0x3691AB);
-      graphics.drawRect(-10, -25, 20, 50);
-      graphics.endFill(); 
+      var scale:Matrix = new Matrix();
+      
+      scale.scale(3, 3);
+      scale.translate(-Resources.Jackhammer.width * 3 / 2, -Resources.Jackhammer.height * 3 / 2);
+      graphics.beginBitmapFill(Resources.Jackhammer.bitmapData, scale, false);
+      graphics.drawRect(-Resources.Jackhammer.width * 3 / 2, -Resources.Jackhammer.height * 3 / 2, Resources.Jackhammer.width * 3, Resources.Jackhammer.height * 3);
+      graphics.endFill();
+      
+      var trans:Matrix = new Matrix();
+      trans.scale(3, 3);
+      trans.translate( - Resources.Jack.width * 3 / 2, -Resources.Jackhammer.height * 3 / 2 - Resources.Jack.height * 3 + 5);
+      m_Dude.graphics.beginBitmapFill(Resources.Jack.bitmapData, trans, false);
+      m_Dude.graphics.drawRect(- Resources.Jack.width * 3 / 2, -Resources.Jackhammer.height * 3 / 2 - Resources.Jack.height * 3 + 5, Resources.Jack.width * 3, Resources.Jack.height * 3);
+      m_Dude.graphics.endFill();
+      
+      m_HitTest.graphics.beginFill(0x53DBF2, 0.8);
+      m_HitTest.graphics.drawCircle(0, Resources.Jackhammer.height * 3 / 2, 5);
+      m_HitTest.graphics.endFill();
     }
     
     public function GetScore():int

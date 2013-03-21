@@ -6,6 +6,7 @@ package JackHammer
   import flash.text.TextFormat;
   import flash.utils.Dictionary;
   import flash.text.TextField;
+  import flash.geom.Matrix;
   import TomatoAS.Engine;
   import TomatoAS.GameObject;
 	
@@ -18,6 +19,8 @@ package JackHammer
     private var m_PlayerMoving:Boolean;
     private var m_Player:GameObject;
     private var m_Score:TextField;
+    private var m_Backgrounds:Array;
+    private var m_Level:int;
     
     public static var Obstacles:Dictionary = new Dictionary();
     private static var Grid:Dictionary = new Dictionary();
@@ -36,6 +39,8 @@ package JackHammer
       new Engine(stage);
       Engine.Instance.Start();
       
+      m_Backgrounds = [Background, BackgroundDeep];
+      
       m_Score = new TextField();
       var format:TextFormat = new TextFormat("Arial", 36, 0xeeeeee, true);
       m_Score.defaultTextFormat = format;
@@ -47,10 +52,22 @@ package JackHammer
       stage.addEventListener("StartMoving", StartMoving, false, 0, true);
       
       stage.dispatchEvent(new Event("StartGame"));
+      
+      var dug:Sprite = new Sprite();
+      Engine.Instance.AddObjectToLayer(dug, 2);
+      
+      var scale:Matrix = new Matrix();
+      scale.scale(4, 4);
+      dug.graphics.beginBitmapFill(Resources.TileRockDug.bitmapData, scale);
+      dug.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+      dug.graphics.endFill();
+      dug.mask = Engine.Instance.GetLayer(1);
 		}
     
     public function StartGame(e:Event):void
     {
+      m_Level = 0;
+      
       for (var x:String in Grid)
       {
         for (var y:String in Grid)
@@ -65,8 +82,9 @@ package JackHammer
       }
       Grid = new Dictionary();
       
-      var player:GameObject = Engine.Instance.CreateObject();
+      var player:GameObject = Engine.Instance.CreateObject(3);
       player.AddComponent(new Player());
+      player.AddComponent(new DigEffect());
       player.x = 0;
       player.y = -100;
       m_Player = player;
@@ -83,20 +101,27 @@ package JackHammer
     private function GameLoop(e:Event):void
     {
       // Update score
-      m_Score.text = (m_Player.GetComponent("Player") as Player).GetScore().toString();
+      var score:int = (m_Player.GetComponent("Player") as Player).GetScore();
+      m_Score.text = score.toString();
       
-      var arrayX:Array = [Math.floor((Engine.Instance.Camera.x - stage.stageWidth / 2) / Background1.Width), 
-                          Math.floor((Engine.Instance.Camera.x + stage.stageWidth / 2) / Background1.Width),
-                          Math.floor((Engine.Instance.Camera.x + stage.stageWidth / 2) / Background1.Width),
-                          Math.floor((Engine.Instance.Camera.x - stage.stageWidth / 2) / Background1.Width)];
+      // Update level
+      m_Level = score / 5000;
+      if (m_Level > 1)
+        m_Level = 1;
+      
+      var arrayX:Array = [Math.floor((Engine.Instance.Camera.x - stage.stageWidth / 2) / Background.Width), 
+                          Math.floor((Engine.Instance.Camera.x + stage.stageWidth / 2) / Background.Width),
+                          Math.floor((Engine.Instance.Camera.x + stage.stageWidth / 2) / Background.Width),
+                          Math.floor((Engine.Instance.Camera.x - stage.stageWidth / 2) / Background.Width)];
                           
-      var arrayY:Array = [Math.floor((Engine.Instance.Camera.y - stage.stageHeight / 2) / Background1.Height), 
-                          Math.floor((Engine.Instance.Camera.y + stage.stageHeight / 2) / Background1.Height),
-                          Math.floor((Engine.Instance.Camera.y - stage.stageHeight / 2) / Background1.Height),
-                          Math.floor((Engine.Instance.Camera.y + stage.stageHeight / 2) / Background1.Height)];
+      var arrayY:Array = [Math.floor((Engine.Instance.Camera.y - stage.stageHeight / 2) / Background.Height), 
+                          Math.floor((Engine.Instance.Camera.y + stage.stageHeight / 2) / Background.Height),
+                          Math.floor((Engine.Instance.Camera.y - stage.stageHeight / 2) / Background.Height),
+                          Math.floor((Engine.Instance.Camera.y + stage.stageHeight / 2) / Background.Height)];
       
       // Respawn background
       var obj:GameObject;
+      var backgroundClass:Class = m_Backgrounds[m_Level];
       for (var i:int = 0; i < arrayX.length; ++i)
       {
         var gridX:int = arrayX[i];
@@ -108,10 +133,10 @@ package JackHammer
         if (!Grid[gridX][gridY] && gridY >= 0)
         {
           obj = Engine.Instance.CreateObject();
-          var bg:Background1 = new Background1();
+          var bg:Background = new backgroundClass();
           obj.AddComponent(bg);
-          obj.x = gridX * Background1.Width;
-          obj.y = gridY * Background1.Height;
+          obj.x = gridX * Background.Width;
+          obj.y = gridY * Background.Height;
           Grid[gridX][gridY] = obj;
           SpawnLava(obj);
         }
@@ -144,8 +169,8 @@ package JackHammer
       {
         var obj:GameObject = Engine.Instance.CreateObject();
         obj.AddComponent(new Lava());
-        obj.x = bg.x + Math.random() * Background1.Width;
-        obj.y = bg.y + Math.random() * Background1.Height;
+        obj.x = bg.x + Math.random() * Background.Width;
+        obj.y = bg.y + Math.random() * Background.Height;
       }
     }
 		

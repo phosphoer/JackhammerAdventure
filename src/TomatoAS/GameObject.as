@@ -22,10 +22,10 @@ package TomatoAS
     
     private static var CurrentID:int = 0;
     
-    public function GameObject() 
+    public function GameObject(layer:int) 
     {
       m_ID = CurrentID++;
-      m_Layer = 0;
+      m_Layer = layer;
       m_Destroyed = false;
       
       m_Components = new Dictionary();

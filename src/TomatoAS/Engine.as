@@ -1,5 +1,6 @@
 package TomatoAS 
 {
+  import flash.display.DisplayObjectContainer;
   import flash.display.Sprite;
   import flash.display.Stage;
   import flash.events.Event;
@@ -36,7 +37,7 @@ package TomatoAS
       m_Layers = new Array();
       m_Stage = stage;
       
-      for (var i:int = 0; i < 3; ++i)
+      for (var i:int = 0; i < 5; ++i)
       {
         m_Layers.push(new Sprite())
         addChild(m_Layers[i]);
@@ -58,17 +59,30 @@ package TomatoAS
       return m_Systems[systemName];
     }
     
-    public function CreateObject():GameObject
+    public function CreateObject(layer:int = 0):GameObject
     {
-      var gameObject:GameObject = new GameObject();
+      var gameObject:GameObject = new GameObject(layer);
       m_Objects[gameObject.GetID()] = gameObject;
       m_Layers[gameObject.GetLayer()].addChild(gameObject);
       return gameObject;
     }
     
+    public function AddObjectToLayer(obj:DisplayObjectContainer, layer:int, depth:int = -1):void
+    {
+      if (depth > 0)
+        m_Layers[layer].addChildAt(obj, depth);
+      else
+        m_Layers[layer].addChild(obj);
+    }
+    
     public function DestroyObject(gameObject:GameObject):void
     {
       m_Trash.push(gameObject);
+    }
+    
+    public function GetLayer(i:int):Sprite
+    {
+      return m_Layers[i];
     }
 		
     public function Start():void
@@ -92,10 +106,18 @@ package TomatoAS
         m_Systems[systemName].Update(0.017);
       }
       
-      for (var layerID:String in m_Layers)
+      for (var layerID:int = 0; layerID < 5; ++layerID)
       {
-        m_Layers[layerID].x = -Camera.x / (1 + parseFloat(layerID) * 5) + stage.stageWidth / 2;
-        m_Layers[layerID].y = -Camera.y / (1 + parseFloat(layerID) * 5) + stage.stageHeight / 2;
+        if (layerID > 3)
+        {
+          m_Layers[layerID].x = -Camera.x / (1 + layerID * 5) + stage.stageWidth / 2;
+          m_Layers[layerID].y = -Camera.y / (1 + layerID * 5) + stage.stageHeight / 2;
+        }
+        else if (layerID != 2)
+        {
+          m_Layers[layerID].x = -Camera.x + stage.stageWidth / 2;
+          m_Layers[layerID].y = -Camera.y + stage.stageHeight / 2;
+        }
       }
       
       for (var objectID:String in m_Trash)

@@ -2,6 +2,7 @@ package JackHammer
 { 
   import flash.display.Bitmap;
   import flash.events.Event;
+  import flash.geom.Matrix;
   import flash.utils.Dictionary;
   import TomatoAS.IComponent;
   import TomatoAS.Engine;
@@ -11,18 +12,18 @@ package JackHammer
    * ...
    * @author David Evans
    */
-  public class Background1 extends IComponent
+  public class Background extends IComponent
   {
     public var SpawnedBottom:Boolean;
     public var SpawnedLeft:Boolean;
     public var SpawnedRight:Boolean;
     
-    public static var Width:int = 1000;
-    public static var Height:int = 2000;
+    public static var Width:int = Resources.TileRock.width * 70;
+    public static var Height:int = Resources.TileRock.height * 70;
     
     private static var Count:int;
     
-    public function Background1() 
+    public function Background() 
     {
       cacheAsBitmap = true;
       SpawnedBottom = false;
@@ -44,13 +45,15 @@ package JackHammer
     {
     }
     
-    private function Draw():void
+    protected function Draw():void
     {
-      graphics.beginFill(0x543318);
+      var scale:Matrix = new Matrix();
+      scale.scale(8, 8);
+      graphics.beginBitmapFill(Resources.TileRock.bitmapData, scale);
       graphics.drawRect(-1, -1, Width + 1, Height + 1);
       graphics.endFill();
       
-      for (var i:int = 0; i < 100; ++i)
+      for (var i:int = 0; i < 0; ++i)
       {
         var size:Number = Math.random() * 40 + 10;
         var xpos:Number = size + Math.random() * (Width - size * 2);
