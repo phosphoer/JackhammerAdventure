@@ -39,7 +39,7 @@ package JackHammer
       new Engine(stage);
       Engine.Instance.Start();
       
-      m_Backgrounds = [Background, BackgroundDeep];
+      m_Backgrounds = [Background, BackgroundDeep, BackgroundWater];
       
       m_Score = new TextField();
       var format:TextFormat = new TextFormat("Arial", 36, 0xeeeeee, true);
@@ -51,8 +51,6 @@ package JackHammer
       stage.addEventListener("StartGame", StartGame, false, 0, true);
       stage.addEventListener("StartMoving", StartMoving, false, 0, true);
       
-      stage.dispatchEvent(new Event("StartGame"));
-      
       var dug:Sprite = new Sprite();
       Engine.Instance.AddObjectToLayer(dug, 2);
       
@@ -62,6 +60,17 @@ package JackHammer
       dug.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
       dug.graphics.endFill();
       dug.mask = Engine.Instance.GetLayer(1);
+      
+      var sky:Sprite = new Sprite();
+      Engine.Instance.AddObjectToLayer(sky, 3);
+      sky.x = -stage.stageWidth;
+      sky.y = -stage.stageHeight;
+      
+      sky.graphics.beginFill(0x54C4D8);
+      sky.graphics.drawRect(0, 0, stage.stageWidth * 3, stage.stageHeight);
+      sky.graphics.endFill();
+      
+      stage.dispatchEvent(new Event("StartGame"));
 		}
     
     public function StartGame(e:Event):void
@@ -86,7 +95,7 @@ package JackHammer
       player.AddComponent(new Player());
       player.AddComponent(new DigEffect());
       player.x = 0;
-      player.y = -100;
+      player.y = -20;
       m_Player = player;
       Engine.Instance.Camera.y = 0;
       
@@ -106,8 +115,8 @@ package JackHammer
       
       // Update level
       m_Level = score / 5000;
-      if (m_Level > 1)
-        m_Level = 1;
+      if (m_Level >= m_Backgrounds.length)
+        m_Level = 0;
       
       var arrayX:Array = [Math.floor((Engine.Instance.Camera.x - stage.stageWidth / 2) / Background.Width), 
                           Math.floor((Engine.Instance.Camera.x + stage.stageWidth / 2) / Background.Width),

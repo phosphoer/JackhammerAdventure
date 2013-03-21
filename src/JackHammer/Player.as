@@ -22,15 +22,17 @@ package JackHammer
     private var m_Moving:Boolean;
     private var m_Score:int;
     private var m_Dude:Sprite;
+    private var m_Hammer:Sprite;
     private var m_HitTest:Sprite;
     
     public function Player() 
     { 
-      m_Angle = 0;
-      m_DudeAngle = 0;
+      m_Angle = Math.PI / 2 + Math.random() - 0.5;
+      m_DudeAngle = Math.PI / 2 + Math.random() - 0.5;
       m_Dude = new Sprite();
+      m_Hammer = new Sprite();
       m_HitTest = new Sprite();
-      m_Speed = 10;
+      m_Speed = 5;
       m_Moving = false;
       Draw();
     }
@@ -39,6 +41,7 @@ package JackHammer
     {
       stage.addEventListener(MouseEvent.CLICK, OnMouseDown, false, 0, true);
       addChild(m_Dude);
+      addChild(m_Hammer);
       addChild(m_HitTest);
       m_HitTest.visible = false;
     }
@@ -55,7 +58,9 @@ package JackHammer
       if (mouseY < this.parent.y)
         mouseY = this.parent.y;
       var angle:Number = Math.atan2(mouseY - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);
-      m_Angle += (angle - m_Angle) / 15;
+      if (!m_Moving)
+        angle = Math.PI / 2;
+      m_Angle += (angle - m_Angle) / 12;
       m_DudeAngle += (angle - m_DudeAngle) / 25;
       
       // Constrain to direction we want to move
@@ -67,7 +72,7 @@ package JackHammer
       // Move
       if (m_Moving)
       {
-        m_Speed = 10 + Math.log(m_Score / 100 + 1);
+        m_Speed = 5 + Math.log(m_Score / 50 + 1);
         this.parent.x += Math.cos(m_Angle) * m_Speed;
         this.parent.y += Math.sin(m_Angle) * m_Speed;
       }
@@ -104,6 +109,10 @@ package JackHammer
     private function OnMouseDown(e:MouseEvent):void
     {
       m_Moving = true;
+      graphics.clear();
+      m_Hammer.graphics.clear();
+      m_Dude.graphics.clear();
+      DrawMoving();
       stage.dispatchEvent(new Event("StartMoving"));
     }
     
@@ -113,9 +122,32 @@ package JackHammer
       
       scale.scale(3, 3);
       scale.translate(-Resources.Jackhammer.width * 3 / 2, -Resources.Jackhammer.height * 3 / 2);
-      graphics.beginBitmapFill(Resources.Jackhammer.bitmapData, scale, false);
-      graphics.drawRect(-Resources.Jackhammer.width * 3 / 2, -Resources.Jackhammer.height * 3 / 2, Resources.Jackhammer.width * 3, Resources.Jackhammer.height * 3);
-      graphics.endFill();
+      m_Hammer.graphics.beginBitmapFill(Resources.Jackhammer.bitmapData, scale, false);
+      m_Hammer.graphics.drawRect(-Resources.Jackhammer.width * 3 / 2, -Resources.Jackhammer.height * 3 / 2, Resources.Jackhammer.width * 3, Resources.Jackhammer.height * 3);
+      m_Hammer.graphics.endFill();
+      
+      var trans:Matrix = new Matrix();
+      trans.scale(3, 3);
+      var ypos:Number = -Resources.JackStand.height * 3 + 25;
+      trans.translate( - Resources.Jack.width * 3 / 2, ypos);
+      m_Dude.graphics.beginBitmapFill(Resources.JackStand.bitmapData, trans, false);
+      m_Dude.graphics.drawRect(- Resources.Jack.width * 3 / 2, ypos, Resources.Jack.width * 3, Resources.Jack.height * 3);
+      m_Dude.graphics.endFill();
+      
+      m_HitTest.graphics.beginFill(0x53DBF2, 0.8);
+      m_HitTest.graphics.drawCircle(0, Resources.Jackhammer.height * 3 / 2, 5);
+      m_HitTest.graphics.endFill();
+    }
+    
+    private function DrawMoving():void
+    {
+      var scale:Matrix = new Matrix(); 
+      
+      scale.scale(3, 3);
+      scale.translate(-Resources.Jackhammer.width * 3 / 2, -Resources.Jackhammer.height * 3 / 2);
+      m_Hammer.graphics.beginBitmapFill(Resources.Jackhammer.bitmapData, scale, false);
+      m_Hammer.graphics.drawRect(-Resources.Jackhammer.width * 3 / 2, -Resources.Jackhammer.height * 3 / 2, Resources.Jackhammer.width * 3, Resources.Jackhammer.height * 3);
+      m_Hammer.graphics.endFill();
       
       var trans:Matrix = new Matrix();
       trans.scale(3, 3);

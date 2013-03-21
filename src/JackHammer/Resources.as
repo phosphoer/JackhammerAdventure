@@ -23,10 +23,21 @@ package JackHammer
     private static const JackhammerClass:Class;
     public static const Jackhammer:Bitmap = new JackhammerClass() as Bitmap;
     
-     [Embed (source = "../../res/Jack.png")]
+    [Embed (source = "../../res/Jack.png")]
     private static const JackClass:Class;
     public static const Jack:Bitmap = new JackClass() as Bitmap;
     
+    [Embed (source = "../../res/JackStand.png")]
+    private static const JackStandClass:Class;
+    public static const JackStand:Bitmap = new JackStandClass() as Bitmap;
+    
+    [Embed (source = "../../res/Bubble.png")]
+    private static const BubbleClass:Class;
+    public static const Bubble:Bitmap = new BubbleClass() as Bitmap;
+    
+    [Embed (source = "../../res/Lava.png")]
+    private static const LavaClass:Class;
+    public static const Lava:Bitmap = new LavaClass() as Bitmap;
   }
 
 }
