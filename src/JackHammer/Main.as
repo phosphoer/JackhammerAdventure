@@ -39,7 +39,7 @@ package JackHammer
       new Engine(stage);
       Engine.Instance.Start();
       
-      m_Backgrounds = [Background, BackgroundDeep, BackgroundWater];
+      m_Backgrounds = [Background, BackgroundDeep, BackgroundWater, BackgroundSpace];
       
       m_Score = new TextField();
       var format:TextFormat = new TextFormat("Arial", 36, 0xeeeeee, true);
@@ -173,7 +173,7 @@ package JackHammer
     
     public function SpawnLava(bg:GameObject):void
     {
-      var num:int = (m_Player.GetComponent("Player") as Player).GetScore() / 1000 + 5;
+      var num:int = (m_Player.GetComponent("Player") as Player).GetScore() / 1500 + 5;
       for (var i:int = 0; i < num; ++i)
       {
         var obj:GameObject = Engine.Instance.CreateObject();
