@@ -115,7 +115,7 @@ package JackHammer
       m_Score.text = score.toString();
       
       // Update level
-      m_Level = score / (5000 * (m_Level + 1));
+      m_Level = score / (10000);
       if (m_Level >= m_Backgrounds.length)
         m_Level = 0;
       

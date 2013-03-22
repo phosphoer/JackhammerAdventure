@@ -72,7 +72,17 @@ package JackHammer
         m_Angle = 0;
         
       if (m_SuperPowerTime > 0)
+      {
         --m_SuperPowerTime;
+        
+        if (m_SuperPowerTime > 30)
+        {
+          var bit:DiamondParticle = new DiamondParticle(50 + Math.random() * 50);
+          bit.x = parent.x;
+          bit.y = parent.y;
+          Engine.Instance.AddObjectToLayer(bit, 3);
+        }
+      }
       
       // Move
       if (m_Moving)
