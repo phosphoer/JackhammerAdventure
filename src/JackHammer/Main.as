@@ -24,6 +24,7 @@ package JackHammer
     private var m_ScoreValue:int;
     private var m_Backgrounds:Array;
     private var m_Level:int;
+    private var m_DiamondBar:DiamondBar;
     
     public static var Obstacles:Dictionary = new Dictionary();
     public static var Diamonds:Dictionary = new Dictionary();
@@ -76,6 +77,10 @@ package JackHammer
       sky.graphics.beginFill(0x54C4D8);
       sky.graphics.drawRect(0, 0, stage.stageWidth * 3, stage.stageHeight);
       sky.graphics.endFill();
+     
+      m_DiamondBar = new DiamondBar();
+      m_DiamondBar.x = stage.stageWidth - m_DiamondBar.width;
+      Engine.Instance.HUDLayer.addChild(m_DiamondBar);
       
       MochiServices.connect("fcba24a922a3a65a", Engine.Instance.HUDLayer);
       stage.dispatchEvent(new Event("StartGame"));
@@ -129,6 +134,9 @@ package JackHammer
       var score:int = (m_Player.GetComponent("Player") as Player).GetScore();
       m_ScoreValue = score;
       m_Score.text = score.toString();
+      
+      // Update diamonds
+      m_DiamondBar.Update((m_Player.GetComponent("Player") as Player).GetDiamondTime());
       
       // Update level
       m_Level = score / (10000);

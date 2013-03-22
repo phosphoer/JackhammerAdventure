@@ -139,6 +139,11 @@ package JackHammer
       return "Player";
     }
     
+    public function GetDiamondTime():Number
+    {
+      return m_SuperPowerTime / 150;
+    }
+    
     private function OnMouseDown(e:MouseEvent):void
     {
       m_Moving = true;
