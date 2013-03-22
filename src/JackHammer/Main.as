@@ -82,7 +82,9 @@ package JackHammer
       sky.graphics.endFill();
      
       m_DiamondBar = new DiamondBar();
-      m_DiamondBar.x = stage.stageWidth - m_DiamondBar.width;
+      m_DiamondBar.x = stage.stageWidth / 2 - m_DiamondBar.width / 2;
+      m_DiamondBar.y = stage.stageHeight / 2 - 120;
+      m_DiamondBar.alpha = 0.5;
       Engine.Instance.HUDLayer.addChild(m_DiamondBar);
       
       MochiServices.connect("fcba24a922a3a65a", Engine.Instance.HUDLayer);
@@ -146,7 +148,12 @@ package JackHammer
       m_Dug.graphics.endFill();
       
       // Update diamonds
-      m_DiamondBar.Update((m_Player.GetComponent("Player") as Player).GetDiamondTime());
+      var diamondPercent:Number = (m_Player.GetComponent("Player") as Player).GetDiamondTime();
+      if (diamondPercent <= 0)
+        m_DiamondBar.alpha = 0;
+      else
+        m_DiamondBar.alpha = 0.5;
+      m_DiamondBar.Update(diamondPercent);
       
       // Update level
       m_Level = score / (10000);

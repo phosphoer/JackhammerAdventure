@@ -25,11 +25,11 @@ package JackHammer
     private function Draw():void
     {
       graphics.beginFill(0x03211D);
-      graphics.drawRect(0, 0, 300, 30);
+      graphics.drawRect(0, 0, 150, 30);
       graphics.endFill();
       
       graphics.beginFill(0x6DF3DF);
-      graphics.drawRect(2, 2, 298 * m_Percent, 28);
+      graphics.drawRect(2, 2, 148 * m_Percent, 28);
       graphics.endFill();
     }
   }
