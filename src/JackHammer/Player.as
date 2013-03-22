@@ -4,8 +4,10 @@ package JackHammer
   import flash.display.Shape;
   import flash.display.Sprite;
   import flash.events.Event;
+  import flash.events.KeyboardEvent;
   import flash.events.MouseEvent;
   import flash.geom.Matrix;
+  import flash.ui.Keyboard;
   import TomatoAS.IComponent;
   import TomatoAS.Engine;
   import JackHammer.Resources;
@@ -16,6 +18,7 @@ package JackHammer
    */
   public class Player extends IComponent
   {
+    private var m_DestAngle:Number;
     private var m_Angle:Number;
     private var m_DudeAngle:Number;
     private var m_Speed:Number;
@@ -25,9 +28,13 @@ package JackHammer
     private var m_Hammer:Sprite;
     private var m_HitTest:Sprite;
     private var m_SuperPowerTime:int;
+    private var m_MouseEnabled:Boolean;
+    private var m_TurnLeft:Boolean;
+    private var m_TurnRight:Boolean;
     
     public function Player() 
     { 
+      m_DestAngle = Math.PI / 2 + Math.random() - 0.5;
       m_Angle = Math.PI / 2 + Math.random() - 0.5;
       m_DudeAngle = Math.PI / 2 + Math.random() - 0.5;
       m_Dude = new Sprite();
@@ -36,12 +43,18 @@ package JackHammer
       m_Speed = 5;
       m_Moving = false;
       m_SuperPowerTime = 0;
+      m_MouseEnabled = true;
+      m_TurnLeft = false;
+      m_TurnRight = false;
       Draw();
     }
     
     public override function Initialize():void
     {
       stage.addEventListener(MouseEvent.CLICK, OnMouseDown, false, 0, true);
+      stage.addEventListener(KeyboardEvent.KEY_DOWN, OnKeyDown, false, 0, true);
+      stage.addEventListener(KeyboardEvent.KEY_UP, OnKeyUp, false, 0, true);
+      stage.addEventListener(MouseEvent.MOUSE_MOVE, OnMouseMove, false, 0, true);
       addChild(m_Dude);
       addChild(m_Hammer);
       addChild(m_HitTest);
@@ -59,11 +72,27 @@ package JackHammer
       var mouseY:Number = Engine.Instance.MouseWorld.y;
       if (mouseY < this.parent.y)
         mouseY = this.parent.y;
-      var angle:Number = Math.atan2(mouseY - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);
+      if (m_MouseEnabled)
+      {
+        m_DestAngle = Math.atan2(mouseY - this.parent.y, Engine.Instance.MouseWorld.x - this.parent.x);
+      }
+      else
+      {
+        if (m_TurnLeft)
+          m_DestAngle += 0.3;
+        if (m_TurnRight)
+          m_DestAngle -= 0.3;
+        
+        if (m_DestAngle < 0) 
+          m_DestAngle = 0;
+        if (m_DestAngle > Math.PI)
+          m_DestAngle = Math.PI;
+      }
       if (!m_Moving)
-        angle = Math.PI / 2;
-      m_Angle += (angle - m_Angle) / 12;
-      m_DudeAngle += (angle - m_DudeAngle) / 25;
+        m_DestAngle = Math.PI / 2;
+        
+      m_Angle += (m_DestAngle - m_Angle) / 12;
+      m_DudeAngle += (m_DestAngle- m_DudeAngle) / 25;
       
       // Constrain to direction we want to move
       if (m_Angle < -Math.PI / 2)
@@ -165,6 +194,40 @@ package JackHammer
       m_Dude.graphics.clear();
       DrawMoving();
       stage.dispatchEvent(new Event("StartMoving"));
+    }
+    
+    private function OnMouseMove(e:MouseEvent):void
+    {
+      m_MouseEnabled = true;
+    }
+    
+    private function OnKeyDown(e:KeyboardEvent):void  
+    {
+      m_MouseEnabled = false;
+      
+      if (e.keyCode == Keyboard.SPACE)
+      {
+        m_Moving = true;
+        graphics.clear();
+        m_Hammer.graphics.clear();
+        m_Dude.graphics.clear();
+        DrawMoving();
+        stage.dispatchEvent(new Event("StartMoving"));
+        return;
+      }
+      
+      if (e.keyCode == Keyboard.RIGHT || e.keyCode == Keyboard.D)
+        m_TurnRight = true;
+      if (e.keyCode == Keyboard.LEFT || e.keyCode == Keyboard.A)
+        m_TurnLeft = true;
+    }
+    
+    private function OnKeyUp(e:KeyboardEvent):void  
+    {
+      if (e.keyCode == Keyboard.RIGHT || e.keyCode == Keyboard.D)
+        m_TurnRight = false;
+      if (e.keyCode == Keyboard.LEFT || e.keyCode == Keyboard.A)
+        m_TurnLeft = false;
     }
     
     private function Draw():void
