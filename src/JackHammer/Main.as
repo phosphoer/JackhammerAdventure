@@ -157,8 +157,7 @@ package JackHammer
       
       // Update level
       m_Level = score / (10000);
-      if (m_Level >= m_Backgrounds.length)
-        m_Level = 0;
+      m_Level %= m_Backgrounds.length;
       
       var arrayX:Array = [Math.floor((Engine.Instance.Camera.x - stage.stageWidth / 2) / Background.Width), 
                           Math.floor((Engine.Instance.Camera.x + stage.stageWidth / 2) / Background.Width),
