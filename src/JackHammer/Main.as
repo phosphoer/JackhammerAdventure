@@ -219,7 +219,10 @@ package JackHammer
       for (var i:int = 0; i < num; ++i)
       {
         var obj:GameObject = Engine.Instance.CreateObject();
-        obj.AddComponent(new Lava());
+        if (m_Backgrounds[m_Level] == BackgroundSpace)
+          obj.AddComponent(new Spaceship());
+        else
+          obj.AddComponent(new Lava());
         obj.x = bg.x + Math.random() * Background.Width;
         obj.y = bg.y + Math.random() * Background.Height;
       }

@@ -46,6 +46,14 @@ package JackHammer
     [Embed (source = "../../res/DiamondBit.png")]
     private static const DiamondBitClass:Class;
     public static const DiamondBit:Bitmap = new DiamondBitClass() as Bitmap;
+
+    [Embed (source = "../../res/Spaceship.png")]
+    private static const SpaceshipClass:Class;
+    public static const Spaceship:Bitmap = new SpaceshipClass() as Bitmap;
+
+    [Embed (source = "../../res/Laser.png")]
+    private static const LaserClass:Class;
+    public static const Laser:Bitmap = new LaserClass() as Bitmap;
   }
 
 }
