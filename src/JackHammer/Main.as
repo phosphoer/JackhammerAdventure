@@ -156,7 +156,7 @@ package JackHammer
       m_DiamondBar.Update(diamondPercent);
       
       // Update level
-      m_Level = score / (10000);
+      m_Level = score / 8000;
       m_Level %= m_Backgrounds.length;
       
       var arrayX:Array = [Math.floor((Engine.Instance.Camera.x - stage.stageWidth / 2) / Background.Width), 
