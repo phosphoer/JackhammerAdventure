@@ -1,5 +1,6 @@
 package JackHammer
 {
+  import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
   import flash.text.AntiAliasType;
@@ -9,16 +10,18 @@ package JackHammer
   import flash.geom.Matrix;
   import TomatoAS.Engine;
   import TomatoAS.GameObject;
+  import mochi.as3.*;
 	
 	/**
 	 * ...
 	 * @author David Evans
 	 */
-	public class Main extends Sprite 
+	public class Main extends MovieClip 
 	{
     private var m_PlayerMoving:Boolean;
     private var m_Player:GameObject;
     private var m_Score:TextField;
+    private var m_ScoreValue:int;
     private var m_Backgrounds:Array;
     private var m_Level:int;
     
@@ -30,6 +33,8 @@ package JackHammer
 		{
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
+      
+      m_ScoreValue = 0;
 		}
 		
 		private function init(e:Event = null):void 
@@ -50,6 +55,7 @@ package JackHammer
      
       addEventListener(Event.ENTER_FRAME, GameLoop, false, 0, true);
       stage.addEventListener("StartGame", StartGame, false, 0, true);
+      stage.addEventListener("EndGame", EndGame, false, 0, true);
       stage.addEventListener("StartMoving", StartMoving, false, 0, true);
       
       var dug:Sprite = new Sprite();
@@ -71,8 +77,17 @@ package JackHammer
       sky.graphics.drawRect(0, 0, stage.stageWidth * 3, stage.stageHeight);
       sky.graphics.endFill();
       
+      MochiServices.connect("fcba24a922a3a65a", Engine.Instance.HUDLayer);
       stage.dispatchEvent(new Event("StartGame"));
 		}
+    
+    public function EndGame(e:Event):void
+    {
+      var o:Object = { n: [15, 7, 4, 4, 13, 5, 10, 9, 14, 3, 15, 4, 0, 8, 11, 13], f: function (i:Number,s:String):String { if (s.length == 16) return s; return this.f(i+1,s + this.n[i].toString(16));}};
+      var boardID:String = o.f(0,"");
+      MochiScores.showLeaderboard( { boardID: boardID, score: m_ScoreValue } );
+      stage.dispatchEvent(new Event("StartGame"));
+    }
     
     public function StartGame(e:Event):void
     {
@@ -112,6 +127,7 @@ package JackHammer
     {
       // Update score
       var score:int = (m_Player.GetComponent("Player") as Player).GetScore();
+      m_ScoreValue = score;
       m_Score.text = score.toString();
       
       // Update level

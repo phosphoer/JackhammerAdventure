@@ -1,6 +1,7 @@
 package TomatoAS 
 {
   import flash.display.DisplayObjectContainer;
+  import flash.display.MovieClip;
   import flash.display.Sprite;
   import flash.display.Stage;
   import flash.events.Event;
@@ -42,7 +43,7 @@ package TomatoAS
         m_Layers.push(new Sprite())
         addChild(m_Layers[i]);
       }
-      HUDLayer = new Sprite();
+      HUDLayer = new MovieClip();
       addChild(HUDLayer);
       
       Camera = new Point();

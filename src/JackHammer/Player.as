@@ -116,7 +116,7 @@ package JackHammer
           if (Main.Obstacles[i].Parent.TestCollision(m_HitTest))
           {
             Parent.Destroy();
-            stage.dispatchEvent(new Event("StartGame"));
+            stage.dispatchEvent(new Event("EndGame"));
             break;
           }
         }
