@@ -38,6 +38,10 @@ package JackHammer
     [Embed (source = "../../res/Lava.png")]
     private static const LavaClass:Class;
     public static const Lava:Bitmap = new LavaClass() as Bitmap;
+    
+    [Embed (source = "../../res/Diamond.png")]
+    private static const DiamondClass:Class;
+    public static const Diamond:Bitmap = new DiamondClass() as Bitmap;
   }
 
 }

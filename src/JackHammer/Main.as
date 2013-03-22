@@ -23,6 +23,7 @@ package JackHammer
     private var m_Level:int;
     
     public static var Obstacles:Dictionary = new Dictionary();
+    public static var Diamonds:Dictionary = new Dictionary();
     private static var Grid:Dictionary = new Dictionary();
     
 		public function Main():void 
@@ -114,7 +115,7 @@ package JackHammer
       m_Score.text = score.toString();
       
       // Update level
-      m_Level = score / 5000;
+      m_Level = score / (5000 * (m_Level + 1));
       if (m_Level >= m_Backgrounds.length)
         m_Level = 0;
       
@@ -148,6 +149,7 @@ package JackHammer
           obj.y = gridY * Background.Height;
           Grid[gridX][gridY] = obj;
           SpawnLava(obj);
+          SpawnDiamonds(obj);
         }
       }
       
@@ -178,6 +180,18 @@ package JackHammer
       {
         var obj:GameObject = Engine.Instance.CreateObject();
         obj.AddComponent(new Lava());
+        obj.x = bg.x + Math.random() * Background.Width;
+        obj.y = bg.y + Math.random() * Background.Height;
+      }
+    }
+    
+    public function SpawnDiamonds(bg:GameObject):void
+    {
+      var num:int = 2;
+      for (var i:int = 0; i < num; ++i)
+      {
+        var obj:GameObject = Engine.Instance.CreateObject();
+        obj.AddComponent(new Diamond());
         obj.x = bg.x + Math.random() * Background.Width;
         obj.y = bg.y + Math.random() * Background.Height;
       }

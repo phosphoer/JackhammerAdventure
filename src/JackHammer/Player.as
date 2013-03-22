@@ -24,6 +24,7 @@ package JackHammer
     private var m_Dude:Sprite;
     private var m_Hammer:Sprite;
     private var m_HitTest:Sprite;
+    private var m_SuperPowerTime:int;
     
     public function Player() 
     { 
@@ -34,6 +35,7 @@ package JackHammer
       m_HitTest = new Sprite();
       m_Speed = 5;
       m_Moving = false;
+      m_SuperPowerTime = 0;
       Draw();
     }
     
@@ -68,13 +70,19 @@ package JackHammer
         m_Angle = Math.PI;
       else if (m_Angle < 0)
         m_Angle = 0;
+        
+      if (m_SuperPowerTime > 0)
+        --m_SuperPowerTime;
       
       // Move
       if (m_Moving)
       {
         m_Speed = 5 + Math.log(m_Score / 50 + 1);
-        this.parent.x += Math.cos(m_Angle) * m_Speed;
-        this.parent.y += Math.sin(m_Angle) * m_Speed;
+        var speed:Number = m_Speed;
+        if (m_SuperPowerTime > 0)
+          speed *= 2;
+        this.parent.x += Math.cos(m_Angle) * speed;
+        this.parent.y += Math.sin(m_Angle) * speed;
       }
       
       // Rotate to direction
@@ -89,13 +97,28 @@ package JackHammer
       m_Score = Math.max(0, this.parent.y);
       
       // Check collision against obstacles
-      for (var i:String in Main.Obstacles)
+      var i:String;
+      if (m_SuperPowerTime <= 0)
+      {
+        for (i in Main.Obstacles)
+        {
+          // if (this.Parent.TestCollision(Main.Obstacles[i]))
+          if (Main.Obstacles[i].Parent.TestCollision(m_HitTest))
+          {
+            Parent.Destroy();
+            stage.dispatchEvent(new Event("StartGame"));
+            break;
+          }
+        }
+      }
+      
+      // Check collision against diamonds
+      for (i in Main.Diamonds)
       {
         // if (this.Parent.TestCollision(Main.Obstacles[i]))
-        if (Main.Obstacles[i].Parent.TestCollision(m_HitTest))
+        if (Main.Diamonds[i].Parent.TestCollision(m_HitTest))
         {
-          Parent.Destroy();
-          stage.dispatchEvent(new Event("StartGame"));
+          m_SuperPowerTime = 150;
           break;
         }
       }
