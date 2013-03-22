@@ -93,6 +93,9 @@ package JackHammer
           speed *= 2;
         this.parent.x += Math.cos(m_Angle) * speed;
         this.parent.y += Math.sin(m_Angle) * speed;
+        
+        m_Hammer.x = Math.cos(Math.random() * Math.PI * 2) * 2 - 1;
+        m_Hammer.y = Math.sin(Math.random() * Math.PI * 2) * 2 - 1;
       }
       
       // Rotate to direction
