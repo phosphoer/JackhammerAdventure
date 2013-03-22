@@ -3,6 +3,7 @@ package JackHammer
   import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
+  import flash.geom.Point;
   import flash.text.AntiAliasType;
   import flash.text.TextFormat;
   import flash.utils.Dictionary;
@@ -25,6 +26,8 @@ package JackHammer
     private var m_Backgrounds:Array;
     private var m_Level:int;
     private var m_DiamondBar:DiamondBar;
+    private var m_DugTransform:Matrix;
+    private var m_Dug:Sprite;
     
     public static var Obstacles:Dictionary = new Dictionary();
     public static var Diamonds:Dictionary = new Dictionary();
@@ -34,14 +37,15 @@ package JackHammer
 		{
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
-      
-      m_ScoreValue = 0;
 		}
 		
 		private function init(e:Event = null):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
+      
+      m_ScoreValue = 0;
+      m_DugTransform = new Matrix();
       
       new Engine(stage);
       Engine.Instance.Start();
@@ -59,15 +63,14 @@ package JackHammer
       stage.addEventListener("EndGame", EndGame, false, 0, true);
       stage.addEventListener("StartMoving", StartMoving, false, 0, true);
       
-      var dug:Sprite = new Sprite();
-      Engine.Instance.AddObjectToLayer(dug, 2);
+      m_Dug = new Sprite();
+      Engine.Instance.AddObjectToLayer(m_Dug, 2);
       
-      var scale:Matrix = new Matrix();
-      scale.scale(4, 4);
-      dug.graphics.beginBitmapFill(Resources.TileRockDug.bitmapData, scale);
-      dug.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
-      dug.graphics.endFill();
-      dug.mask = Engine.Instance.GetLayer(1);
+      m_DugTransform.scale(4, 4);
+      m_Dug.graphics.beginBitmapFill(Resources.TileRockDug.bitmapData, m_DugTransform);
+      m_Dug.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+      m_Dug.graphics.endFill();
+      m_Dug.mask = Engine.Instance.GetLayer(1);
       
       var sky:Sprite = new Sprite();
       Engine.Instance.AddObjectToLayer(sky, 3);
@@ -134,6 +137,13 @@ package JackHammer
       var score:int = (m_Player.GetComponent("Player") as Player).GetScore();
       m_ScoreValue = score;
       m_Score.text = score.toString();
+      
+      m_DugTransform.tx = -m_Player.x;
+      m_DugTransform.ty = -m_Player.y;
+      m_Dug.graphics.clear();
+      m_Dug.graphics.beginBitmapFill(Resources.TileRockDug.bitmapData, m_DugTransform);
+      m_Dug.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+      m_Dug.graphics.endFill();
       
       // Update diamonds
       m_DiamondBar.Update((m_Player.GetComponent("Player") as Player).GetDiamondTime());

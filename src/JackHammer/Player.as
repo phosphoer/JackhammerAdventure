@@ -144,6 +144,16 @@ package JackHammer
       return m_SuperPowerTime / 150;
     }
     
+    public function GetSpeed():Number
+    {
+      return m_Speed;
+    }
+    
+    public function GetAngle():Number
+    {
+      return m_Angle;
+    }
+    
     private function OnMouseDown(e:MouseEvent):void
     {
       m_Moving = true;
