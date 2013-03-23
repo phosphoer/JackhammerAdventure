@@ -133,8 +133,13 @@ package JackHammer
       m_Dude.rotation = ((m_DudeAngle - m_Angle) * 180) / Math.PI;
       
       // Update camera
+      var endPosY:Number = this.parent.y + 170;
+      var percentY:Number = this.parent.y / 10000;
+      if (percentY > 1)
+        percentY = 1;
+      
       Engine.Instance.Camera.x = this.parent.x;
-      Engine.Instance.Camera.y = this.parent.y;
+      Engine.Instance.Camera.y = percentY * endPosY + (1 - percentY) * this.parent.y;
       
       // Update score
       m_Score = Math.max(0, this.parent.y);
