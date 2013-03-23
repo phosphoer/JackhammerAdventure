@@ -58,6 +58,10 @@ package JackHammer
     [Embed (source = "../../res/LavaBit.png")]
     private static const LavaBitClass:Class;
     public static const LavaBit:Bitmap = new LavaBitClass() as Bitmap;
+
+    [Embed (source = "../../res/Mine.png")]
+    private static const MineClass:Class;
+    public static const Mine:Bitmap = new MineClass() as Bitmap;
   }
 
 }

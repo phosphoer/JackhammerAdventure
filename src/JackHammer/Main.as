@@ -50,7 +50,7 @@ package JackHammer
       new Engine(stage);
       Engine.Instance.Start();
       
-      m_Backgrounds = [Background, BackgroundDeep, BackgroundWater, BackgroundSpace];
+      m_Backgrounds = [BackgroundWater, BackgroundDeep, BackgroundWater, BackgroundSpace];
       
       m_Score = new TextField();
       var format:TextFormat = new TextFormat("Arial", 36, 0xeeeeee, true);
@@ -221,6 +221,8 @@ package JackHammer
         var obj:GameObject = Engine.Instance.CreateObject();
         if (m_Backgrounds[m_Level] == BackgroundSpace)
           obj.AddComponent(new Spaceship());
+        else if (m_Backgrounds[m_Level] == BackgroundWater)
+          obj.AddComponent(new Mine());
         else
           obj.AddComponent(new Lava());
         obj.x = bg.x + Math.random() * Background.Width;
