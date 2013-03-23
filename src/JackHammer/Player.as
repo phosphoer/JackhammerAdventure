@@ -32,6 +32,8 @@ package JackHammer
     private var m_MouseEnabled:Boolean;
     private var m_TurnLeft:Boolean;
     private var m_TurnRight:Boolean;
+    private var m_Multiplier:Number;
+    private var m_MultiplierTimer:int;
     
     public function Player() 
     { 
@@ -47,6 +49,8 @@ package JackHammer
       m_MouseEnabled = true;
       m_TurnLeft = false;
       m_TurnRight = false;
+      m_Multiplier = 0;
+      m_MultiplierTimer = 0;
       Draw();
     }
     
@@ -101,6 +105,9 @@ package JackHammer
       else if (m_Angle < 0)
         m_Angle = 0;
         
+      if (m_MultiplierTimer > 0)
+        --m_MultiplierTimer;
+        
       if (m_SuperPowerTime > 0)
       {
         --m_SuperPowerTime;
@@ -142,7 +149,8 @@ package JackHammer
       Engine.Instance.Camera.y = percentY * endPosY + (1 - percentY) * this.parent.y;
       
       // Update score
-      m_Score = Math.max(0, this.parent.y);
+      if (m_Moving)
+        ++m_Score;
       
       // Check collision against obstacles
       var i:String;
@@ -159,6 +167,9 @@ package JackHammer
           }
           else
           {
+            AddMultiplier();
+            m_Score += 250 * m_Multiplier;
+            
             Main.Obstacles[i].Parent.Destroy();
             for (var j:int = 0; j < 35; ++j)
             {
@@ -291,6 +302,19 @@ package JackHammer
       m_HitTest.graphics.beginFill(0x53DBF2, 0.8);
       m_HitTest.graphics.drawCircle(0, Resources.Jackhammer.height * 3 / 2, 5);
       m_HitTest.graphics.endFill();
+    }
+    
+    private function AddMultiplier():void
+    {
+      if (m_MultiplierTimer <= 0)
+        m_Multiplier = 1;
+      m_Multiplier += 0.5;
+      m_MultiplierTimer = 75;
+      
+      var mult:MultiplierText = new MultiplierText(m_Multiplier);
+      mult.x = 100;
+      mult.y = 300;
+      Engine.Instance.HUDLayer.addChild(mult);
     }
     
     public function GetScore():int

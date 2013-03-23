@@ -50,12 +50,13 @@ package JackHammer
       new Engine(stage);
       Engine.Instance.Start();
       
-      m_Backgrounds = [BackgroundWater, BackgroundDeep, BackgroundWater, BackgroundSpace];
+      m_Backgrounds = [Background, BackgroundDeep, BackgroundWater, BackgroundSpace];
       
       m_Score = new TextField();
       var format:TextFormat = new TextFormat("Arial", 36, 0xeeeeee, true);
       m_Score.defaultTextFormat = format;
       m_Score.antiAliasType = AntiAliasType.ADVANCED;
+      m_Score.width = 400;
       Engine.Instance.HUDLayer.addChild(m_Score);
      
       addEventListener(Event.ENTER_FRAME, GameLoop, false, 0, true);
@@ -156,7 +157,7 @@ package JackHammer
       m_DiamondBar.Update(diamondPercent);
       
       // Update level
-      m_Level = score / 8000;
+      m_Level = m_Player.y / 8000;
       m_Level %= m_Backgrounds.length;
       
       var arrayX:Array = [Math.floor((Engine.Instance.Camera.x - stage.stageWidth / 2) / Background.Width), 
@@ -215,7 +216,7 @@ package JackHammer
     
     public function SpawnLava(bg:GameObject):void
     {
-      var num:int = (m_Player.GetComponent("Player") as Player).GetScore() / 1500 + 5;
+      var num:int = 5 + m_Level * 3;
       for (var i:int = 0; i < num; ++i)
       {
         var obj:GameObject = Engine.Instance.CreateObject();
