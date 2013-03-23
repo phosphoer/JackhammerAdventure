@@ -8,6 +8,7 @@ package JackHammer
   import flash.events.MouseEvent;
   import flash.geom.Matrix;
   import flash.ui.Keyboard;
+  import TomatoAS.GameObject;
   import TomatoAS.IComponent;
   import TomatoAS.Engine;
   import JackHammer.Resources;
@@ -107,8 +108,8 @@ package JackHammer
         if (m_SuperPowerTime > 30)
         {
           var bit:DiamondParticle = new DiamondParticle(50 + Math.random() * 50);
-          bit.x = parent.x;
-          bit.y = parent.y;
+          bit.x = parent.x + Math.cos(m_Angle) * 30;
+          bit.y = parent.y + Math.sin(m_Angle) * 30;
           Engine.Instance.AddObjectToLayer(bit, 3);
         }
       }
@@ -140,16 +141,27 @@ package JackHammer
       
       // Check collision against obstacles
       var i:String;
-      if (m_SuperPowerTime <= 0)
+      for (i in Main.Obstacles)
       {
-        for (i in Main.Obstacles)
+        // if (this.Parent.TestCollision(Main.Obstacles[i]))
+        if (Main.Obstacles[i].Parent.TestCollision(m_HitTest))
         {
-          // if (this.Parent.TestCollision(Main.Obstacles[i]))
-          if (Main.Obstacles[i].Parent.TestCollision(m_HitTest))
+          if (m_SuperPowerTime <= 0)
           {
             Parent.Destroy();
             stage.dispatchEvent(new Event("EndGame"));
             break;
+          }
+          else
+          {
+            Main.Obstacles[i].Parent.Destroy();
+            for (var j:int = 0; j < 35; ++j)
+            {
+              var lavaPart:LavaParticle = new LavaParticle(20 + Math.random() * 20);
+              Engine.Instance.AddObjectToLayer(lavaPart, 3);
+              lavaPart.x = Main.Obstacles[i].Parent.x;
+              lavaPart.y = Main.Obstacles[i].Parent.y;
+            }
           }
         }
       }
@@ -158,8 +170,9 @@ package JackHammer
       for (i in Main.Diamonds)
       {
         // if (this.Parent.TestCollision(Main.Obstacles[i]))
-        if (Main.Diamonds[i].Parent.TestCollision(m_HitTest))
+        if (Main.Diamonds[i].Parent.TestCollision(Parent))
         {
+          Main.Diamonds[i].Parent.Destroy();
           m_SuperPowerTime = 150;
           break;
         }

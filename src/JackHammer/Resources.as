@@ -54,6 +54,10 @@ package JackHammer
     [Embed (source = "../../res/Laser.png")]
     private static const LaserClass:Class;
     public static const Laser:Bitmap = new LaserClass() as Bitmap;
+
+    [Embed (source = "../../res/LavaBit.png")]
+    private static const LavaBitClass:Class;
+    public static const LavaBit:Bitmap = new LavaBitClass() as Bitmap;
   }
 
 }
