@@ -25,6 +25,7 @@ package JackHammer
     private var m_ScoreValue:int;
     private var m_Backgrounds:Array;
     private var m_Level:int;
+    private var m_LevelMod:int;
     private var m_DiamondBar:DiamondBar;
     private var m_DugTransform:Matrix;
     private var m_Dug:Sprite;
@@ -158,7 +159,7 @@ package JackHammer
       
       // Update level
       m_Level = m_Player.y / 8000;
-      m_Level %= m_Backgrounds.length;
+      m_LevelMod = m_Level % m_Backgrounds.length;
       
       var arrayX:Array = [Math.floor((Engine.Instance.Camera.x - stage.stageWidth / 2) / Background.Width), 
                           Math.floor((Engine.Instance.Camera.x + stage.stageWidth / 2) / Background.Width),
@@ -172,7 +173,7 @@ package JackHammer
       
       // Respawn background
       var obj:GameObject;
-      var backgroundClass:Class = m_Backgrounds[m_Level];
+      var backgroundClass:Class = m_Backgrounds[m_LevelMod];
       for (var i:int = 0; i < arrayX.length; ++i)
       {
         var gridX:int = arrayX[i];
@@ -220,9 +221,9 @@ package JackHammer
       for (var i:int = 0; i < num; ++i)
       {
         var obj:GameObject = Engine.Instance.CreateObject();
-        if (m_Backgrounds[m_Level] == BackgroundSpace)
+        if (m_Backgrounds[m_LevelMod] == BackgroundSpace)
           obj.AddComponent(new Spaceship());
-        else if (m_Backgrounds[m_Level] == BackgroundWater)
+        else if (m_Backgrounds[m_LevelMod] == BackgroundWater)
           obj.AddComponent(new Mine());
         else
           obj.AddComponent(new Lava());
